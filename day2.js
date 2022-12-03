@@ -1,21 +1,7 @@
 var fs = require("fs");
+const { mainModule } = require("process");
 
-// Asynchronous read
-/*
-fs.readFile('input.txt', function (err, data) {
-   if (err) {
-      return console.error(err);
-   }
-   rawData = data.toString()
-   //console.log("Asynchronous read: " + data.toString());
-});
-*/
-
-//ingest data
-var data = fs.readFileSync('input.txt');
-var rawData = data.toString();
-
- const convertRawToRoundArray = (rawInput) => {
+const convertRawToRoundArray = (rawInput) => {
     //for (let i = 0; i < rawData.legnth(); i++) {
     let roundArray = []
     let roundInputLen = 4
@@ -35,9 +21,115 @@ var rawData = data.toString();
         } 
     } 
     return roundArray
- }
+}
 
-converted = convertRawToRoundArray(rawData)
-console.log(converted)
-console.log(`There should be ${converted.length} lines`)
+const decryptShape = (encryptedShape) => {
+    let shape;
+    if (encryptedShape == 'A' || encryptedShape == 'X') {
+        shape = 'rock'
+    } else if (encryptedShape == 'B' || encryptedShape == 'Y') {
+        shape = 'paper'
+    } else if (encryptedShape == 'C' || encryptedShape == 'Z') {
+        shape = 'scissors'
+    } else {
+        console.log(encryptedShape)
+        throw('Decryption Error')
+    }
+    return shape
 
+
+}
+
+const getOutcomeScore = (playerShape, oppShape) => {
+    //console.log(`opp: ${oppShape}, player: ${playerShape}`)
+    let outcomeScore;
+
+    if (playerShape == oppShape) {
+        outcomeScore = 3
+    } else if (playerShape == 'rock' && oppShape == 'paper') {
+        outcomeScore = 0
+    } else if (playerShape == 'rock' && oppShape == 'scissors') {
+        outcomeScore = 6
+    } else if (playerShape == 'scissors' && oppShape == 'rock') {
+        outcomeScore = 0
+    } else if (playerShape == 'scissors' && oppShape == 'paper') {
+        outcomeScore = 6
+    } else if (playerShape == 'paper' && oppShape == 'scissors') {
+        outcomeScore = 0
+    } else if (playerShape == 'paper' && oppShape == 'rock') {
+        outcomeScore = 6
+    } 
+    else {
+        console.log(`opp: ${oppShape}, player: ${playerShape}`)
+        throw("getOutcomeScore fundamental Error")
+    }
+    //console.log(`outcomeScore = ${outcomeScore}`)
+    return outcomeScore
+}
+
+const getShapeScore = (playerShape) => {
+
+    let shapeScore;
+    if (playerShape == 'rock') {
+        shapeScore = 1
+    } else if (playerShape == 'paper') {
+        shapeScore = 2
+    } else if (playerShape == 'scissors') {
+        shapeScore = 3
+    } else {
+        console.log('_____________________________')
+        console.log('_____________________________')
+        console.log(playerShape)
+        throw("getShapeScore fundamental Error")
+    }
+    //console.log(`shapeScore = ${shapeScore}`)
+    return shapeScore
+
+}
+
+const getRoundScore = (round) => {
+    //console.log(`Raw Round: ${round}`)
+    let playerIndex = 1
+    let encPlayShape = round[playerIndex]
+    //console.log(`Encrypted Player Shape: ${encPlayShape}`)
+    let playerShape = decryptShape(encPlayShape)
+    let oppShapeIndex = Number(!playerIndex)
+    //console.log(`Opponent Shape Index: ${oppShapeIndex}`)
+    let encOppShape = round[oppShapeIndex]
+    //console.log(`Encrypted Opponent Shape: ${encOppShape}`)
+    let opponentShape = decryptShape(encOppShape)
+    let outcomeScore = getOutcomeScore(playerShape, opponentShape)
+    let shapeScore = getShapeScore(playerShape)
+    let roundScore = outcomeScore + shapeScore
+    return roundScore
+}
+
+const getMyScore = (roundArray) => {
+    myScore = 0
+    //for(let i = 0; i < roundArray.length; ++i) {
+    for(let i = 0; i < roundArray.length; ++i) {
+        let round = roundArray[i]
+        let roundScore = getRoundScore(round)
+        //console.log(roundScore)
+        console.log(`iteration ${i}`)
+        myScore += roundScore
+        //console.log(`Running Total = ${myScore}`)
+    }
+    return myScore
+
+}
+
+const main = () => {
+    //ingest data 
+    var data = fs.readFileSync('input.txt');
+    var rawData = data.toString();
+
+    //convert data to array
+    converted = convertRawToRoundArray(rawData)
+
+    let myScore = getMyScore(converted)
+    console.log(myScore)
+
+}
+
+main()
