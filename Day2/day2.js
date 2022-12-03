@@ -104,12 +104,56 @@ const getRoundScore = (round) => {
     return roundScore
 }
 
+const getPlayerShape = (endState, oppShape) => {
+    //X lose, Y draw, Z win
+    let playerShape;
+
+    if (endState == 'Y') {
+        playerShape = oppShape
+    } else if (endState == 'X' && oppShape == 'paper') {
+        playerShape = 'rock'
+    } else if (endState == 'X' && oppShape == 'scissors') {
+        playerShape = 'paper'
+    } else if (endState == 'X' && oppShape == 'rock') {
+        playerShape = 'scissors'
+    } else if (endState == 'Z' && oppShape == 'paper') {
+        playerShape = 'scissors'
+    } else if (endState == 'Z' && oppShape == 'scissors') {
+        playerShape = 'rock'
+    } else if (endState == 'Z' && oppShape == 'rock') {
+        playerShape = 'paper'
+    } 
+    else {
+        console.log(`opp: ${oppShape}, endState: ${endState}`)
+        throw("getOutcomeScore fundamental Error")
+    }
+    console.log(`opp: ${oppShape}, endState: ${endState}, player: ${playerShape}`)
+    return playerShape
+}
+
+const getRoundScoreEnding = (round) => {
+    //console.log(`Raw Round: ${round}`)
+
+    //should be fine below here
+    let oppShapeIndex = 0
+    //console.log(`Opponent Shape Index: ${oppShapeIndex}`)
+    let encOppShape = round[oppShapeIndex]
+    //console.log(`Encrypted Opponent Shape: ${encOppShape}`)
+    let opponentShape = decryptShape(encOppShape)
+    let endState = round[1]
+    let playerShape = getPlayerShape(endState, opponentShape)
+    let outcomeScore = getOutcomeScore(playerShape, opponentShape)
+    let shapeScore = getShapeScore(playerShape)
+    let roundScore = outcomeScore + shapeScore
+    return roundScore
+}
+
 const getMyScore = (roundArray) => {
     myScore = 0
     //for(let i = 0; i < roundArray.length; ++i) {
     for(let i = 0; i < roundArray.length; ++i) {
         let round = roundArray[i]
-        let roundScore = getRoundScore(round)
+        let roundScore = getRoundScoreEnding(round)
         //console.log(roundScore)
         console.log(`iteration ${i}`)
         myScore += roundScore
