@@ -1,52 +1,7 @@
 var fs = require("fs");
 const { mainModule } = require("process");
 
-const convertRawToRoundArray = (rawInput) => {
-    //for (let i = 0; i < rawData.legnth(); i++) {
-    let roundArray = []
-    let roundInputLen = 4
-    let spaceIndex = 1
-    let tabIndex = 3
-    let round = [];
-    for (let i = 0; i < rawInput.length; i++) {
-        let c = rawInput[i];
-        if (i % roundInputLen == tabIndex) {
-            roundArray.push(round)
-            round = []
-        } else if ( i % roundInputLen == spaceIndex) {
-            if (c != ' ') {throw("Misclaculation")}
-        }
-        else {
-            round.push(c)
-        } 
-    } 
-    return roundArray
-}
-
-const convertRawToRucksackArray = (rawInput) => {
-    //for (let i = 0; i < rawData.legnth(); i++) {
-    let roundArray = []
-    let roundInputLen = 4
-    let spaceIndex = 1
-    let tabIndex = 3
-    let round = [];
-    for (let i = 0; i < 50; i++) {
-        let c = rawInput[i];
-        console.log(c)
-        /*
-        if (i % roundInputLen == tabIndex) {
-            roundArray.push(round)
-            round = []
-        } else if ( i % roundInputLen == spaceIndex) {
-            if (c != ' ') {throw("Misclaculation")}
-        }
-        else {
-            round.push(c)
-        }
-        */
-    } 
-    return roundArray
-}
+/*
 
 const decryptShape = (encryptedShape) => {
     let shape;
@@ -155,10 +110,46 @@ const getPlayerShape = (endState, oppShape) => {
     console.log(`opp: ${oppShape}, endState: ${endState}, player: ${playerShape}`)
     return playerShape
 }
+*/
 
-const getRoundScoreEnding = (round) => {
+const getRepeatedItem = (packArray) => {
+    //figures out which element is reapeated in each pack partition
+    
+    //determines which item is in the first two elements of the array
+    let item = '-'
+    let first = packArray[0]
+    for(let i = 0; i < packArray[1].length; ++i) {
+        let c = packArray[1][i]
+        if (first.includes(c)) {
+            item = c
+        }
+    }
+    if (item == '-') {throw("getRepeatedItem: no match found!")}
+    return item
+}
+
+const splitRucksack = (packContent) => {
+    //creates array that has the partition of content
+    let splitPack = []
+    let itemsInPack = packContent.length
+    if (itemsInPack % 2 == 0) {
+        let first = packContent.slice(0, itemsInPack / 2)
+        splitPack.push(first)
+        let second = packContent.slice(itemsInPack / 2)
+        splitPack.push(second)
+    } else {
+        throw("splitRucksack: odd amount of content!")
+    }
+    return splitPack
+}
+
+const getRucksackPriority = (packContent) => {
     //console.log(`Raw Round: ${round}`)
-
+    let splitPack = splitRucksack(packContent)
+    let repeatedItem = getRepeatedItem(splitPack)
+    console.log(repeatedItem)
+    return 0
+    throw('STOP')
     //should be fine below here
     let oppShapeIndex = 0
     //console.log(`Opponent Shape Index: ${oppShapeIndex}`)
@@ -173,16 +164,16 @@ const getRoundScoreEnding = (round) => {
     return roundScore
 }
 
-const getMyScore = (roundArray) => {
-    myScore = 0
-    //for(let i = 0; i < roundArray.length; ++i) {
-    for(let i = 0; i < roundArray.length; ++i) {
-        let round = roundArray[i]
-        let roundScore = getRoundScoreEnding(round)
-        //console.log(roundScore)
-        console.log(`iteration ${i}`)
-        myScore += roundScore
-        //console.log(`Running Total = ${myScore}`)
+const getPrioritySum = (rucksackArray) => {
+    prioritySum = 0
+    //for(let i = 0; i < rucksackArray.length; ++i) {
+    for(let i = 0; i < rucksackArray.length; ++i) {
+        let rucksack = rucksackArray[i]
+        let rucksackPriority = getRucksackPriority(rucksack)
+        //console.log(rucksackPriority)
+        //console.log(`iteration ${i}`)
+        prioritySum += rucksackPriority
+        //console.log(`Running Total = ${prioritySum}`)
     }
     return myScore
 
@@ -190,15 +181,14 @@ const getMyScore = (roundArray) => {
 
 const main = () => {
     //ingest data 
-    var data = fs.readFileSync('input3.txt');
+    var data = fs.readFileSync('testInput.txt');
     var rawData = data.toString();
 
-    console.log(rawData)
-
     //convert data to array
-    converted = convertRawToRucksackArray(rawData)
+    converted = rawData.split('\n')
 
-    //let myScore = getMyScore(converted)
+    //calculate priority sum of the converted data array
+    let prioritySum = getPrioritySum(converted)
     //console.log(myScore)
 
 }
