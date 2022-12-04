@@ -36,6 +36,37 @@ const getMinRangeIndex = (pair) => {
     return min_i
 }
 
+const getMinSection = (pair) => {
+    let rangeSizes = []
+    let smallestBound = 10000;
+    let minIntBound;
+    let mCP_i;
+    pair.forEach((range) => {
+        range.forEach((bound) => {
+            minIntBound = Number(bound)
+            if (minIntBound < smallestBound) {smallestBound = minIntBound}
+        })
+    })
+    console.log(`pair: ${pair} smallestBound: ${smallestBound}`)
+    return smallestBound
+}
+
+const getMinContainingPairIndex = (pair) => {
+    let smallestSection = getMinSection(pair)
+    /*
+    if (pair[0].includes(smallestBound) && pair[1].includes(smallestBound)) {
+        //case where the smallest number is in both pairs
+        //return the pair with the smaller range
+
+    } else {
+        //
+        console.log(`pair: ${pair} smallestBound: ${smallestBound}`)
+
+    }
+    */
+    return 0
+}
+
 const isPairContained = (pair) => {
     let smaller_i = getMinRangeIndex(pair)
     let smallerPair = pair[smaller_i]
@@ -45,6 +76,23 @@ const isPairContained = (pair) => {
     let isInsideUpperBound = Number(smallerPair[1]) <= Number(largerPair[1])
 
     return isInsideLowerBound && isInsideUpperBound
+}
+
+const isPairIntersecting = (pair) => {
+    //which pair has the smallest value
+    //what is that value
+    //is the smallest value in the other pair less than the upper bound of the first pair
+
+    let smallest_i = getMinContainingPairIndex(pair)
+    /*
+    throw("STOP")
+    let smallerPair = pair[smaller_i]
+    let larger_i = Number(!Boolean(smaller_i))
+    let largerPair = pair[larger_i]
+    let isInsideLowerBound = Number(largerPair[0]) <= Number(smallerPair[0])
+    let isInsideUpperBound = Number(smallerPair[1]) <= Number(largerPair[1])
+    */
+    return false
 }
 
 const getFullyContainedRanges = (rangePairArray) => {
@@ -58,6 +106,20 @@ const getFullyContainedRanges = (rangePairArray) => {
     })
 
     return containedRanges
+
+}
+
+const getIntersectingPairs = (rangePairArray) => {
+    //Takes fully converted raw data, outputs # of pairs that overlap
+    let intersectingPairs = 0
+    let doesPairIntersect;
+    rangePairArray.forEach((rangePair) => {
+        doesPairIntersect = isPairIntersecting(rangePair)
+        console.log(`pair: ${rangePair[0]} + ${rangePair[1]} ${doesPairIntersect}`)
+        intersectingPairs += Number(doesPairIntersect)
+    })
+
+    return intersectingPairs
 
 }
 
@@ -84,11 +146,12 @@ const main = () => {
     var rawData = data.toString();
 
     //convert data to array
-    let converted = rawToRangeArrays(rawData)
+    let converted = rawToRangeArrays(TEST_DATA)
 
     //Not 454, too low
     //calculate priority sum of the converted data array
-    let fullyContainedRanges = getFullyContainedRanges(converted)
+    //let fullyContainedRanges = getFullyContainedRanges(converted)
+    let intersectingPairs = getIntersectingPairs(converted)
     return fullyContainedRanges
 }
 
