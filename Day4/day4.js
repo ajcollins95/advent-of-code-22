@@ -32,7 +32,7 @@ const getMinRangeIndex = (pair) => {
     })
     let minSize = Math.min(...rangeSizes)
     let min_i = rangeSizes.indexOf(minSize)
-    console.log(`rangeSizes: ${rangeSizes}, min_i: ${min_i}`)
+    //console.log(`rangeSizes: ${rangeSizes}, min_i: ${min_i}`)
     return min_i
 }
 
@@ -88,20 +88,15 @@ const isPairIntersecting = (pair) => {
 
     let smallest_i = getMinContainingPairIndex(pair)
     let minContainingPair = pair[smallest_i]
-    let smallestSection = Number(minContainingPair)
+    let smallestSection = Number(minContainingPair[0])
     let otherPair_i = Number(!Boolean(smallest_i))
     let otherPair = pair[otherPair_i]
-    console.log(`pair: ${pair[0]} + ${pair[1]}, min: ${smallestSection}, mCP_i: ${minContainingPair_i}`)
 
-    /*
-    throw("STOP")
-    let smallerPair = pair[smaller_i]
-    let larger_i = Number(!Boolean(smaller_i))
-    let largerPair = pair[larger_i]
-    let isInsideLowerBound = Number(largerPair[0]) <= Number(smallerPair[0])
-    let isInsideUpperBound = Number(smallerPair[1]) <= Number(largerPair[1])
-    */
-    return false
+    //console.log(`min: ${smallestSection} mCP: ${minContainingPair}, other: ${otherPair}`)
+    //make the below NUMBERS!!!
+    let doesPairIntersect = Number(otherPair[0]) <= Number(minContainingPair[1])
+    console.log(`intersects?: ${doesPairIntersect} mCP: ${minContainingPair}, other: ${otherPair}`)
+    return doesPairIntersect
 }
 
 const getFullyContainedRanges = (rangePairArray) => {
@@ -151,7 +146,7 @@ const rawToRangeArrays = (raw) => {
 
 const main = () => {
     //ingest data 
-    var data = fs.readFileSync('testInput4.txt');
+    var data = fs.readFileSync('input4.txt');
     var rawData = data.toString();
 
     //convert data to array
@@ -161,7 +156,7 @@ const main = () => {
     //calculate priority sum of the converted data array
     //let fullyContainedRanges = getFullyContainedRanges(converted)
     let intersectingPairs = getIntersectingPairs(converted)
-    return fullyContainedRanges
+    return intersectingPairs
 }
 
 console.log(main())
