@@ -32,7 +32,7 @@ const getMinRangeIndex = (pair) => {
     })
     let minSize = Math.min(...rangeSizes)
     let min_i = rangeSizes.indexOf(minSize)
-    //console.log(`rangeSizes: ${rangeSizes}, min_i: ${min_i}`)
+    console.log(`rangeSizes: ${rangeSizes}, min_i: ${min_i}`)
     return min_i
 }
 
@@ -47,24 +47,27 @@ const getMinSection = (pair) => {
             if (minIntBound < smallestBound) {smallestBound = minIntBound}
         })
     })
-    console.log(`pair: ${pair} smallestBound: ${smallestBound}`)
+    //console.log(`pair: ${pair} smallestBound: ${smallestBound}`)
     return smallestBound
 }
 
 const getMinContainingPairIndex = (pair) => {
-    let smallestSection = getMinSection(pair)
-    /*
-    if (pair[0].includes(smallestBound) && pair[1].includes(smallestBound)) {
+    //takes a pair of section assignments, returns the index of the pair with the smallest section number
+    //if there are two pairs that have the smallest section, returns the pair with the smaller range
+    let smallestSection = String(getMinSection(pair))
+    let minContainingPair_i
+    
+    if (pair[0].includes(smallestSection) && pair[1].includes(smallestSection)) {
         //case where the smallest number is in both pairs
         //return the pair with the smaller range
-
+        minContainingPair_i = getMinRangeIndex(pair)
     } else {
-        //
-        console.log(`pair: ${pair} smallestBound: ${smallestBound}`)
-
+        //console.log(`pair: ${pair} smallestBound: ${smallestBound}`)
+        minContainingPair_i = Number(pair[1].includes(smallestSection))
     }
-    */
-    return 0
+    //console.log(`lpair: ${pair[0]} + ${pair[1]}, min: ${smallestSection}, mCP_i: ${minContainingPair_i}`)
+    
+    return minContainingPair_i
 }
 
 const isPairContained = (pair) => {
@@ -84,6 +87,12 @@ const isPairIntersecting = (pair) => {
     //is the smallest value in the other pair less than the upper bound of the first pair
 
     let smallest_i = getMinContainingPairIndex(pair)
+    let minContainingPair = pair[smallest_i]
+    let smallestSection = Number(minContainingPair)
+    let otherPair_i = Number(!Boolean(smallest_i))
+    let otherPair = pair[otherPair_i]
+    console.log(`pair: ${pair[0]} + ${pair[1]}, min: ${smallestSection}, mCP_i: ${minContainingPair_i}`)
+
     /*
     throw("STOP")
     let smallerPair = pair[smaller_i]
@@ -101,7 +110,7 @@ const getFullyContainedRanges = (rangePairArray) => {
     let isPairFullyContained;
     rangePairArray.forEach((rangePair) => {
         isPairFullyContained = isPairContained(rangePair)
-        console.log(`pair: ${rangePair[0]} + ${rangePair[1]} ${isPairFullyContained}`)
+        //console.log(`pair: ${rangePair[0]} + ${rangePair[1]} ${isPairFullyContained}`)
         containedRanges += Number(isPairFullyContained)
     })
 
@@ -115,7 +124,7 @@ const getIntersectingPairs = (rangePairArray) => {
     let doesPairIntersect;
     rangePairArray.forEach((rangePair) => {
         doesPairIntersect = isPairIntersecting(rangePair)
-        console.log(`pair: ${rangePair[0]} + ${rangePair[1]} ${doesPairIntersect}`)
+        //console.log(`pair: ${rangePair[0]} + ${rangePair[1]} ${doesPairIntersect}`)
         intersectingPairs += Number(doesPairIntersect)
     })
 
@@ -146,7 +155,7 @@ const main = () => {
     var rawData = data.toString();
 
     //convert data to array
-    let converted = rawToRangeArrays(TEST_DATA)
+    let converted = rawToRangeArrays(rawData)
 
     //Not 454, too low
     //calculate priority sum of the converted data array
