@@ -41,25 +41,30 @@ const getRepeatedItem = (packArray) => {
     return item
 }
 
-const splitRucksack = (packContent) => {
-    //creates array that has the partition of content
-    let splitPack = []
-    let itemsInPack = packContent.length
-    if (itemsInPack % 2 == 0) {
-        let first = packContent.slice(0, itemsInPack / 2)
-        splitPack.push(first)
-        let second = packContent.slice(itemsInPack / 2)
-        splitPack.push(second)
-    } else {
-        throw("splitRucksack: odd amount of content!")
-    }
-    return splitPack
+const getElfBadge = (group) => {
+    //figures out which element is reapeated in each pack partition
+    
+    //determines which item is in the first two elements of the array
+    let firstElf = group[0].split('')
+    let secondElf = group[1].split('')
+    let thirdElf = group[2].split('')
+
+    let intersect_1_2 = firstElf.filter((c) => secondElf.includes(c))
+    //console.log(firstElf)
+    intersect_1_2 = [...new Set(intersect_1_2)]
+    let intersect_1_2_3 = thirdElf.filter((c) => intersect_1_2.includes(c))
+    
+    let badge = intersect_1_2_3[0]
+    console.log(badge)
+    return badge
+
 }
 
-const getRucksackPriority = (packContent) => {
+const getBadgePriority = (elfGroup) => {
     //console.log(`Raw Round: ${round}`)
-    let splitPack = splitRucksack(packContent)
-    let repeatedItem = getRepeatedItem(splitPack)
+    //let splitPack = splitRucksack(packContent)
+    
+    let repeatedItem = getElfBadge(elfGroup)
     let itemPriority = getItemPriority(repeatedItem)
     //console.log(`Letter ${repeatedItem} is worth ${itemPriority} points`)
 
@@ -67,16 +72,23 @@ const getRucksackPriority = (packContent) => {
 }
 
 const getPrioritySum = (rucksackArray) => {
-    prioritySum = 0
+    let prioritySum = 0
+    let groupSize = 3
+    let elfGroup = []
     //for(let i = 0; i < rucksackArray.length; ++i) {
     for(let i = 0; i < rucksackArray.length; ++i) {
         let rucksack = rucksackArray[i]
-        let rucksackPriority = getRucksackPriority(rucksack)
-        //console.log(rucksackPriority)
-        //console.log(`iteration ${i}`)
-        prioritySum += rucksackPriority
-        //console.log(`Running Total = ${prioritySum}`)
+        elfGroup.push(rucksack)
+        if (i % groupSize == 2) {
+            let badgePriority = getBadgePriority(elfGroup)
+            //console.log(rucksackPriority)
+            //console.log(`iteration ${i}`)
+            prioritySum += badgePriority
+            //console.log(`Running Total = ${prioritySum}`)
+            elfGroup = []
+        } 
     }
+
     return prioritySum
 
 }
