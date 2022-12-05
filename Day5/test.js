@@ -10,10 +10,53 @@ const writeToFile = (data, fileName) => {
             console.error(err)
         }
     })
-}   
+} 
+
+const testExecuteMoves = () => {
+    let methodName = "executeMoves"
+    let inputArray = TEST_CASES[methodName].input
+    let method = TEST_CASES[methodName].method
+    let expectedOutput;
+    let input; 
+    let output;
+    for(let i = 0; i < inputArray.length; ++i) {
+        input = inputArray[i]
+        //console.log(input)
+        output = JSON.stringify(method(...input))
+        //console.log(method(...input))
+        writeToFile(output, 'output')
+
+        expectedOutput = JSON.stringify(TEST_CASES[methodName].output[i])
+
+        assert(output == expectedOutput)
+    }
+
+    console.log(`${methodName} passed all tests!`)
+}
 
 const testGetMovesArray = () => {
-    
+    let methodName = "getMovesArray"
+    let inputArray = TEST_CASES[methodName].input
+    let method = TEST_CASES[methodName].method
+    let expectedOutput;
+    let input; 
+    let output;
+    for(let i = 0; i < inputArray.length; ++i) {
+        input = inputArray[i]
+        //console.log(input)
+        output = JSON.stringify(method(input))
+        if (i == 1) {
+            writeToFile(output, 'output')
+            throw('f')
+        }
+        expectedOutput = JSON.stringify(TEST_CASES[methodName].output[i])
+        //expectedOutput = JSON.stringify(TEST_CASES[methodName].output[i])
+        //console.log(output)
+        //console.log(expectedOutput)
+        assert(output == expectedOutput)
+    }
+
+    console.log(`${methodName} passed all tests!`)
 }
 
 const testGetCrateStack = () => {
@@ -70,6 +113,7 @@ const testAll = () => {
 const test = () => {
     testGetCrateStack()
     testGetMovesArray()
+    testExecuteMoves()
 }
 
 //testAll()

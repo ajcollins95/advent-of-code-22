@@ -4,7 +4,39 @@ const { mainModule } = require("process");
 const INPUT = require("./input")
 //const Stack = require("./Stack")
 
-const getMovesArray = (rawMoves) => {
+
+const moveCrates = (crateStack, move) => {
+    //takes an entire formatted crate stack and a move object
+    //returns the modified crate stack after the move has been executed
+
+    let crane = []
+    let crates = move.crates
+    let start = move.start
+    let end = move.end
+
+    //'lifts' the crates from the start position, places it on the end
+    for(let i = 0; i < crates; ++i) {
+        crateStack[end].push(crateStack[start].pop())
+    }
+
+    return crateStack
+}
+
+const executeMoves = (crateStack, movesArray) => {
+    let newStack = JSON.parse(JSON.stringify(crateStack))
+    //console.log(movesArray)
+    console.log('start')
+    console.log(crateStack)
+    console.log('----------')
+    movesArray.forEach((move) => {
+        console.log(move)
+        newStack = moveCrates(crateStack, move)
+        console.log(newStack)
+    })
+    return newStack
+}
+
+const getMovesArray = (rawMoves) => {  
     //takes the raw moves as a \n delimited string of movements around the stack
     //returns an array of move Objects that have a quantity, start, and end
 
@@ -28,9 +60,7 @@ const getMovesArray = (rawMoves) => {
             'end': 0
         };
     })
-
-    console.log(moves)
-    return move
+    return moves
 }
 
 const getCrateStack = (rawCrateStacks) => {
@@ -52,14 +82,16 @@ const main = () => {
     let input = INPUT.test
     let crateStack = getCrateStack(input.rawStack)
     let moves = getMovesArray(input.rawMoves)
+    //let modifiedStack = executeMoves(crateStack, moves)
     //console.log(crateStack)
 }
 
-main()
+//main()
 
 module.exports = { 
     main,
     getCrateStack,
     getMovesArray,
+    executeMoves
 
 }
