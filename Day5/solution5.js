@@ -22,15 +22,43 @@ const moveCrates = (crateStack, move) => {
     return crateStack
 }
 
+const liftCrates = (crateStack, move) => {
+    //takes an entire formatted crate stack and a move object
+    //returns the modified crate stack after the move has been executed
+
+    let crates = move.crates
+    let start = move.start
+    let end = move.end
+    let startStackLen = crateStack[start].length
+    let endStackLen = crateStack[end].length
+
+    //get top of stack
+    let craneLift = crateStack[start].slice(startStackLen-crates)
+    
+    //remove top from full stack
+    crateStack[start].splice(startStackLen-crates)
+
+    //place onto final position
+    crateStack[end].splice(endStackLen, 0, ...craneLift)
+    
+    /*
+    //'lifts' the crates from the start position, places it on the end
+    
+    for(let i = 0; i < crates; ++i) {
+        crateStack[end].push(crateStack[start].pop())
+    }
+    */
+    return crateStack
+}
+
 const executeMoves = (crateStack, movesArray) => {
     let newStack = JSON.parse(JSON.stringify(crateStack))
-    //console.log(movesArray)
     console.log('start')
     console.log(crateStack)
     console.log('----------')
     movesArray.forEach((move) => {
         console.log(move)
-        newStack = moveCrates(crateStack, move)
+        newStack = liftCrates(crateStack, move)
         console.log(newStack)
     })
     return newStack
@@ -79,14 +107,16 @@ const getCrateStack = (rawCrateStacks) => {
 }
 
 const main = () => {
-    let input = INPUT.test
+    let input = INPUT.live
     let crateStack = getCrateStack(input.rawStack)
     let moves = getMovesArray(input.rawMoves)
-    //let modifiedStack = executeMoves(crateStack, moves)
+    let modifiedStack = executeMoves(crateStack, moves)
+    return modifiedStack
     //console.log(crateStack)
 }
 
-//main()
+
+console.log(main())
 
 module.exports = { 
     main,
